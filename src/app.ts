@@ -1,8 +1,10 @@
+
 import express from "express";
-import Product from "./model/Product.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
 
 const app = express();
+
 app.use(express.json());
 
 // =====================
@@ -16,87 +18,13 @@ app.get("/", (req, res) => {
 });
 
 // =====================
-// Categories
+// Categories of products
 // =====================
-
 app.use("/categories", categoryRoutes);
 
 // =====================
-// Products
+// Products in categories
 // =====================
-app.get("/products", async (req, res) => {
-    try {
-        const products = await Product.findAll();
-
-        res.status(200).json(products)
-    } catch (error) {
-        console.log("Erro ao buscar produtos: ", error);
-
-        res.status(500).json({
-            message: "Erro ao buscar produtos."
-        });
-    }
-});
-
-app.get("/products/:id", async (req, res) => {
-    try {
-        const product = await Product.findById(req.params.id);
-
-        res.status(200).json(product)
-    } catch (error) {
-        console.log("Erro ao buscar produto: ", error);
-
-        res.status(404).json({
-            message: "Produto não encontrado."
-        });
-    }
-});
-
-app.post("/products", async (req, res) => {
-    try {
-        const product = await Product.create(req.body);
-
-        res.status(201).json(product)
-    } catch (error) {
-        console.log("Erro ao criar produto: ", error);
-
-        res.status(500).json({
-            message: "Erro ao criar produto."
-        });
-    }
-});
-
-app.put("/products/:id", async (req, res) => {
-    try {
-        const product = await Product.update(
-            req.params.id, 
-            req.body
-        );
-
-        res.status(200).json(product)
-    } catch (error) {
-        console.log("Erro ao atualizar produto: ", error);
-
-        res.status(404).json({
-            message: "Produto não encontrado."
-        });
-    }
-});
-
-app.delete("/products/:id", async (req, res) => {
-    try {
-        await Product.remove(req.params.id);
-
-        res.status(200).json({
-            message: "Produto removido com sucesso."
-        })
-    } catch (error) {
-        console.log("Erro ao excluir produto: ", error);
-
-        res.status(404).json({
-            message: "Produto não encontrado."
-        });
-    }
-});
+app.use("/products", productRoutes);
 
 export default app;
