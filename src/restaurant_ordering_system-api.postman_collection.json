@@ -1,0 +1,562 @@
+{
+  "info": {
+    "_postman_id": "4b7a3e9d-8827-4f26-824f-22c5446b7758",
+    "name": "restaurant_ordering_system-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53794845",
+    "_collection_link": "https://go.postman.co/collection/53794845-4b7a3e9d-8827-4f26-824f-22c5446b7758?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "GET - List Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "app.get(\"/categories\", (req, res) => {\r\n    res.status(200).json(categories);\r\n});",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Create Category",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "    {\r\n        \"name\": \"Pizza\",\r\n        \"description\": \"Pizzas Tradicionais.\",\r\n        \"icon\": \"🍕\",\r\n        \"display_order\": 1,\r\n        \"active\": true\r\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "app.get(\"/categories/:id\", (req, res) => {\r\n    const category = categories.find((category) => {\r\n        return category.id == req.params.id\r\n    });",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/categories/3547fa81-c8ab-4d24-b92b-80f7318d7e89",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "categories",
+                "3547fa81-c8ab-4d24-b92b-80f7318d7e89"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Put - Category by ID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Pizza Atualizada\",\r\n    \"description\": \"Pizzas Atualizadas 2026.\",\r\n    \"icon\": \"🍕\",\r\n    \"display_order\": 1,\r\n    \"active\": true\r\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/categories/6654e6c1-516f-45f3-8b20-6ba8a5a849a5",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "categories",
+                "6654e6c1-516f-45f3-8b20-6ba8a5a849a5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete - Category by Id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Pizza Atualizada\",\r\n    \"description\": \"Pizzas Atualizadas 2026.\",\r\n    \"icon\": \"🍕\",\r\n    \"display_order\": 1,\r\n    \"active\": true\r\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/categories/6654e6c1-516f-45f3-8b20-6ba8a5a849a5",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "categories",
+                "6654e6c1-516f-45f3-8b20-6ba8a5a849a5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - By Keyword",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/categories/search/hamb",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "categories",
+                "search",
+                "hamb"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "GET - Find By Word",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/products/search/Refri",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "products",
+                "search",
+                "Refri"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - List Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/products",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Create product",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "    {\r\n        \"category_id\": \"562675ee-27e7-43c0-a2b5-72458dea76ed\",\r\n        \"title\": \"Mussarela Especial\",\r\n        \"description\": \"Mussarela com 4 Queijos\",\r\n        \"price\": 36.94,\r\n        \"image\": null,\r\n        \"available\": true,\r\n        \"active\": true\r\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/products",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "    {\r\n       \"title\": \"Mussarela - Especial 5 queijos\",\r\n        \"description\": \"5 Queijos\",\r\n        \"price\": 39.99,\r\n        \"image\": null,\r\n        \"available\": true,\r\n        \"active\": true\r\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/products/d716f461-267a-433f-9119-b95bb52cea88",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "products",
+                "d716f461-267a-433f-9119-b95bb52cea88"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Delete product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/products/59420c7f-ca82-4224-b498-611b0b1dbf28",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "products",
+                "59420c7f-ca82-4224-b498-611b0b1dbf28"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Order",
+      "item": [
+        {
+          "name": "GET - List All",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Find By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/orders/479d47b1-566b-4753-8e25-fb76c6e23173",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "orders",
+                "479d47b1-566b-4753-8e25-fb76c6e23173"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Create",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Update",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"status\": \"preparing\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/orders/ee6a8731-1ae7-44dd-88a6-992108bafabf",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "orders",
+                "ee6a8731-1ae7-44dd-88a6-992108bafabf"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/orders/ee6a8731-1ae7-44dd-88a6-992108bafabf",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "orders",
+                "ee6a8731-1ae7-44dd-88a6-992108bafabf"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Order Items",
+      "item": [
+        {
+          "name": "GET - List All",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/order-items",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "order-items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Find By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/order-items/2da94848-3a18-4035-89cb-7d968d3419ac",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "order-items",
+                "2da94848-3a18-4035-89cb-7d968d3419ac"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Create",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"order_id\": \"479d47b1-566b-4753-8e25-fb76c6e23173\",\r\n  \"product_id\": \"d716f461-267a-433f-9119-b95bb52cea88\",\r\n  \"quantity\": 2\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/order-items",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "order-items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Update",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"quantity\": 4\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/order-items/2da94848-3a18-4035-89cb-7d968d3419ac",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "order-items",
+                "2da94848-3a18-4035-89cb-7d968d3419ac"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/order-items/2da94848-3a18-4035-89cb-7d968d3419ac",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "order-items",
+                "2da94848-3a18-4035-89cb-7d968d3419ac"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

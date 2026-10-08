@@ -2,29 +2,31 @@
 import express from "express";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import orderItemRoutes from "./routes/orderItemRoutes.js";
 
 const app = express();
 
 app.use(express.json());
 
-// =====================
 // Root
-// =====================
 app.get("/", (req, res) => {
     res.status(200).json({
         message: "Restaurant Ordering System - API",
-        version: "1.0.0",
+        version: "1.0.0"
     });
 });
 
-// =====================
-// Categories of products
-// =====================
+// Categories
 app.use("/categories", categoryRoutes);
 
-// =====================
-// Products in categories
-// =====================
+// Products
 app.use("/products", productRoutes);
+
+// Orders
+app.use("/orders", orderRoutes);
+
+// Order Items
+app.use("/order-items", orderItemRoutes);
 
 export default app;
