@@ -329,10 +329,9 @@ O projeto é uma API de caráter acadêmico e não possui interface gráfica, au
 
 O objetivo é demonstrar o desenvolvimento de uma API REST utilizando TypeScript, Express, PostgreSQL e organização do código em camadas.
 
-## 10. Autores
+## 10. Autor
 
 - Felipe Santos
-- Lucas William Santos Rodrigues
 
 Projeto desenvolvido como atividade prática da disciplina de Desenvolvimento Back-End — Engenharia de Software.
 
