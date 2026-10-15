@@ -331,8 +331,8 @@ O objetivo é demonstrar o desenvolvimento de uma API REST utilizando TypeScript
 
 ## 10. Autores
 
-**Felipe Santos**
-**Lucas William Santos Rodrigues**
+- Felipe Santos
+- Lucas William Santos Rodrigues
 
 Projeto desenvolvido como atividade prática da disciplina de Desenvolvimento Back-End — Engenharia de Software.
 
