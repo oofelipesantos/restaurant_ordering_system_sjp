@@ -1,15 +1,17 @@
 
-import supabase from "../config/supabase.js";
+import { getSupabaseClient } from "../config/supabase.js";
+import type { OrderItemPayload, OrderItemRecord } from "../model/OrderItem.js";
 
-export interface OrderItem {
-    order_id: string;
-    product_id: string;
-    quantity: number;
-    unit_price: number;
+export interface OrderItemRepositoryContract {
+    findAll(orderId?: string): Promise<OrderItemRecord[]>;
+    findById(id: string): Promise<OrderItemRecord | null>;
+    create(item: OrderItemPayload): Promise<OrderItemRecord>;
+    update(id: string, quantity: number): Promise<OrderItemRecord | null>;
+    remove(id: string): Promise<boolean>;
 }
 
-async function findAll(orderId?: string) {
-    let query = supabase
+async function findAll(orderId?: string): Promise<OrderItemRecord[]> {
+    let query = getSupabaseClient()
         .from("order_items")
         .select("*");
 
@@ -21,11 +23,11 @@ async function findAll(orderId?: string) {
 
     if (error) throw error;
 
-    return data;
+    return data as OrderItemRecord[];
 }
 
-async function findById(id: string) {
-    const { data, error } = await supabase
+async function findById(id: string): Promise<OrderItemRecord | null> {
+    const { data, error } = await getSupabaseClient()
         .from("order_items")
         .select("*")
         .eq("id", id)
@@ -33,23 +35,11 @@ async function findById(id: string) {
 
     if (error) throw error;
 
-    return data;
+    return data as OrderItemRecord | null;
 }
 
-async function findProduct(productId: string) {
-    const { data, error } = await supabase
-        .from("products")
-        .select("id, price, available, active")
-        .eq("id", productId)
-        .maybeSingle();
-
-    if (error) throw error;
-
-    return data;
-}
-
-async function create(item: OrderItem) {
-    const { data, error } = await supabase
+async function create(item: OrderItemPayload): Promise<OrderItemRecord> {
+    const { data, error } = await getSupabaseClient()
         .from("order_items")
         .insert(item)
         .select()
@@ -57,11 +47,14 @@ async function create(item: OrderItem) {
 
     if (error) throw error;
 
-    return data;
+    return data as OrderItemRecord;
 }
 
-async function update(id: string, quantity: number) {
-    const { data, error } = await supabase
+async function update(
+    id: string,
+    quantity: number,
+): Promise<OrderItemRecord | null> {
+    const { data, error } = await getSupabaseClient()
         .from("order_items")
         .update({ quantity })
         .eq("id", id)
@@ -70,11 +63,11 @@ async function update(id: string, quantity: number) {
 
     if (error) throw error;
 
-    return data;
+    return data as OrderItemRecord | null;
 }
 
-async function remove(id: string) {
-    const { data, error } = await supabase
+async function remove(id: string): Promise<boolean> {
+    const { data, error } = await getSupabaseClient()
         .from("order_items")
         .delete()
         .eq("id", id)
@@ -83,14 +76,15 @@ async function remove(id: string) {
 
     if (error) throw error;
 
-    return data;
+    return data !== null;
 }
 
-export default {
+const OrderItemRepository: OrderItemRepositoryContract = {
     findAll,
     findById,
-    findProduct,
     create,
     update,
     remove
 };
+
+export default OrderItemRepository;

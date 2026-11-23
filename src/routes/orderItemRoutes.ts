@@ -1,13 +1,17 @@
 
 import { Router } from "express";
-import OrderItemController from "../controller/OrderItemController.js";
+import { createOrderItemController } from "../controller/OrderItemController.js";
+import type { OrderItemService } from "../services/OrderItemService.js";
 
-const router = Router();
+export function createOrderItemRoutes(service: OrderItemService): Router {
+    const router = Router();
+    const controller = createOrderItemController(service);
 
-router.get("/", OrderItemController.getAll);
-router.get("/:id", OrderItemController.getById);
-router.post("/", OrderItemController.create);
-router.put("/:id", OrderItemController.update);
-router.delete("/:id", OrderItemController.remove);
+    router.get("/", controller.getAll);
+    router.get("/:id", controller.getById);
+    router.post("/", controller.create);
+    router.put("/:id", controller.update);
+    router.delete("/:id", controller.remove);
 
-export default router;
+    return router;
+}

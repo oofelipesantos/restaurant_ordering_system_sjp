@@ -1,96 +1,143 @@
-import supabase from "../config/supabase.js";
+import {
+    booleanValue,
+    nonNegativeNumber,
+    optionalString,
+    requiredString,
+    uuid,
+} from "../utils/validation.js";
 
-async function findAll() {
-    const { data, error } = await supabase
-        .from("products")
-        .select("*");
-
-    if (error) {
-        throw error;
-    }
-
-    return data;
+export interface ProductRecord {
+    id: string;
+    category_id: string;
+    title: string;
+    description: string | null;
+    price: number;
+    image: string | null;
+    available: boolean;
+    active: boolean;
 }
 
-async function findById(id: string) {
-    const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", id)
-        .single();
-
-    if (error) {
-        throw error;
-    }
-
-    return data;
+export interface ProductPayload {
+    category_id: string;
+    title: string;
+    description: string | null;
+    price: number;
+    image: string | null;
+    available: boolean;
+    active: boolean;
 }
 
-async function create(product: {
-    "categoryId": string,
-    "name": string,
-    "description": string,
-    "price": number,
-    "image": string,
-    "available": boolean,
-    "active": boolean,
-}) {
-    const { data, error } = await supabase
-        .from("products")
-        .insert(product)
-        .select()
-        .single();
-
-    if (error) {
-        throw error;
-    }
-
-    return data;
+export interface ProductInput {
+    category_id?: unknown;
+    title?: unknown;
+    description?: unknown;
+    price?: unknown;
+    image?: unknown;
+    available?: unknown;
+    active?: unknown;
 }
 
-async function update(
-    id: string,
-    product: {
-        "categoryId": string,
-        "name": string,
-        "description": string,
-        "price": number,
-        "image": string,
-        "available": boolean,
-        "active": boolean,
-    }) {
-    const { data, error } = await supabase
-        .from("products")
-        .update(product)
-        .eq("id", id)
-        .select()
-        .single();
+export class Product {
+    private constructor(
+        private readonly id: string | undefined,
+        private categoryId: string,
+        private title: string,
+        private description: string | null,
+        private price: number,
+        private image: string | null,
+        private available: boolean,
+        private active: boolean,
+    ) {}
 
-    if (error) {
-        throw error;
+    static create(input: ProductInput): Product {
+        return new Product(
+            undefined,
+            uuid(input.category_id, "O identificador da categoria"),
+            requiredString(input.title, "O título do produto"),
+            optionalString(input.description, "A descrição do produto"),
+            nonNegativeNumber(input.price, "O preço do produto"),
+            optionalString(input.image, "A imagem do produto"),
+            input.available === undefined
+                ? true
+                : booleanValue(input.available, "A disponibilidade do produto"),
+            input.active === undefined
+                ? true
+                : booleanValue(input.active, "O status do produto"),
+        );
     }
 
-    return data;
-}
-
-async function remove(id: string) {
-    const { data, error } = await supabase
-        .from("products")
-        .delete()
-        .eq("id", id)
-        .single();
-
-    if (error) {
-        throw error;
+    static restore(record: ProductRecord): Product {
+        return new Product(
+            record.id,
+            record.category_id,
+            record.title,
+            record.description,
+            Number(record.price),
+            record.image,
+            record.available,
+            record.active,
+        );
     }
 
-    return data;
-}
+    update(input: ProductInput): void {
+        if (input.category_id !== undefined) {
+            this.categoryId = uuid(
+                input.category_id,
+                "O identificador da categoria",
+            );
+        }
+        if (input.title !== undefined) {
+            this.title = requiredString(input.title, "O título do produto");
+        }
+        if (input.description !== undefined) {
+            this.description = optionalString(
+                input.description,
+                "A descrição do produto",
+            );
+        }
+        if (input.price !== undefined) {
+            this.price = nonNegativeNumber(input.price, "O preço do produto");
+        }
+        if (input.image !== undefined) {
+            this.image = optionalString(input.image, "A imagem do produto");
+        }
+        if (input.available !== undefined) {
+            this.available = booleanValue(
+                input.available,
+                "A disponibilidade do produto",
+            );
+        }
+        if (input.active !== undefined) {
+            this.active = booleanValue(input.active, "O status do produto");
+        }
+    }
 
-export default {
-    findAll,
-    findById,
-    create,
-    update,
-    remove
+    getCategoryId(): string {
+        return this.categoryId;
+    }
+
+    isAvailable(): boolean {
+        return this.available;
+    }
+
+    isActive(): boolean {
+        return this.active;
+    }
+
+    toPayload(): ProductPayload {
+        return {
+            category_id: this.categoryId,
+            title: this.title,
+            description: this.description,
+            price: this.price,
+            image: this.image,
+            available: this.available,
+            active: this.active,
+        };
+    }
+
+    toJSON(): ProductPayload & { id?: string } {
+        const payload = this.toPayload();
+        return this.id === undefined ? payload : { id: this.id, ...payload };
+    }
 }

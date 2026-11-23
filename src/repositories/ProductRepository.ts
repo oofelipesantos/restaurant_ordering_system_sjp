@@ -1,44 +1,59 @@
 
-import supabase from "../config/supabase.js";
+import { getSupabaseClient } from "../config/supabase.js";
+import type { ProductPayload, ProductRecord } from "../model/Product.js";
 
-export interface Product {
-    category_id: string;
-    title: string;
-    description: string;
-    price: number;
-    image: string | null;
-    available: boolean;
-    active: boolean;
+export interface ProductRepositoryContract {
+    findAll(): Promise<ProductRecord[]>;
+    findById(id: string): Promise<ProductRecord | null>;
+    searchByKeyword(keyword: string): Promise<ProductRecord[]>;
+    create(product: ProductPayload): Promise<ProductRecord>;
+    update(id: string, product: ProductPayload): Promise<ProductRecord | null>;
+    remove(id: string): Promise<boolean>;
 }
 
-async function findAll() {
-    const { data, error } = await supabase
+async function findAll(): Promise<ProductRecord[]> {
+    const { data, error } = await getSupabaseClient()
         .from("products")
-        .select("*");
+        .select("*")
+        .order("title", { ascending: true });
 
     if (error) {
         throw error;
     }
 
-    return data;
+    return data as ProductRecord[];
 }
 
-async function findById(id: string) {
-    const { data, error } = await supabase
+async function findById(id: string): Promise<ProductRecord | null> {
+    const { data, error } = await getSupabaseClient()
         .from("products")
         .select("*")
         .eq("id", id)
-        .single();
+        .maybeSingle();
 
     if (error) {
         throw error;
     }
 
-    return data;
+    return data as ProductRecord | null;
 }
 
-async function create(product: Product) {
-    const { data, error } = await supabase
+async function searchByKeyword(keyword: string): Promise<ProductRecord[]> {
+    const { data, error } = await getSupabaseClient()
+        .from("products")
+        .select("*")
+        .or(`title.ilike.%${keyword}%,description.ilike.%${keyword}%`)
+        .order("title", { ascending: true });
+
+    if (error) {
+        throw error;
+    }
+
+    return data as ProductRecord[];
+}
+
+async function create(product: ProductPayload): Promise<ProductRecord> {
+    const { data, error } = await getSupabaseClient()
         .from("products")
         .insert(product)
         .select()
@@ -48,27 +63,29 @@ async function create(product: Product) {
         throw error;
     }
 
-    return data;
+    return data as ProductRecord;
 }
 
-async function update(id: string, product: Partial<Product>) {
-    const { data, error } = await supabase
+async function update(
+    id: string,
+    product: ProductPayload,
+): Promise<ProductRecord | null> {
+    const { data, error } = await getSupabaseClient()
         .from("products")
         .update(product)
         .eq("id", id)
         .select()
-        .single();
+        .maybeSingle();
 
     if (error) {
         throw error;
     }
 
-    return data;
+    return data as ProductRecord | null;
 }
 
-
-async function remove(id: string) {
-    const { data, error } = await supabase
+async function remove(id: string): Promise<boolean> {
+    const { data, error } = await getSupabaseClient()
         .from("products")
         .delete()
         .eq("id", id)
@@ -79,14 +96,16 @@ async function remove(id: string) {
         throw error;
     }
 
-    return data;
+    return data !== null;
 }
 
-
-export default {
+const ProductRepository: ProductRepositoryContract = {
     findAll,
     findById,
+    searchByKeyword,
     create,
     update,
     remove
 };
+
+export default ProductRepository;

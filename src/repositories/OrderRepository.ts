@@ -1,29 +1,28 @@
 
-import supabase from "../config/supabase.js";
+import { getSupabaseClient } from "../config/supabase.js";
+import type { OrderRecord, OrderStatus } from "../model/Order.js";
 
-export const ORDER_STATUSES = [
-    "pending",
-    "preparing",
-    "ready",
-    "delivered",
-    "cancelled"
-] as const;
+export interface OrderRepositoryContract {
+    findAll(): Promise<OrderRecord[]>;
+    findById(id: string): Promise<OrderRecord | null>;
+    create(): Promise<OrderRecord>;
+    update(id: string, status: OrderStatus): Promise<OrderRecord | null>;
+    remove(id: string): Promise<boolean>;
+}
 
-export type OrderStatus = typeof ORDER_STATUSES[number];
-
-async function findAll() {
-    const { data, error } = await supabase
+async function findAll(): Promise<OrderRecord[]> {
+    const { data, error } = await getSupabaseClient()
         .from("orders")
         .select("*")
         .order("created_at", { ascending: false });
 
     if (error) throw error;
 
-    return data;
+    return data as OrderRecord[];
 }
 
-async function findById(id: string) {
-    const { data, error } = await supabase
+async function findById(id: string): Promise<OrderRecord | null> {
+    const { data, error } = await getSupabaseClient()
         .from("orders")
         .select(`
             *,
@@ -39,11 +38,11 @@ async function findById(id: string) {
 
     if (error) throw error;
 
-    return data;
+    return data as OrderRecord | null;
 }
 
-async function create() {
-    const { data, error } = await supabase
+async function create(): Promise<OrderRecord> {
+    const { data, error } = await getSupabaseClient()
         .from("orders")
         .insert({ status: "pending" })
         .select()
@@ -51,11 +50,14 @@ async function create() {
 
     if (error) throw error;
 
-    return data;
+    return data as OrderRecord;
 }
 
-async function update(id: string, status: OrderStatus) {
-    const { data, error } = await supabase
+async function update(
+    id: string,
+    status: OrderStatus,
+): Promise<OrderRecord | null> {
+    const { data, error } = await getSupabaseClient()
         .from("orders")
         .update({ status })
         .eq("id", id)
@@ -64,11 +66,11 @@ async function update(id: string, status: OrderStatus) {
 
     if (error) throw error;
 
-    return data;
+    return data as OrderRecord | null;
 }
 
-async function remove(id: string) {
-    const { data, error } = await supabase
+async function remove(id: string): Promise<boolean> {
+    const { data, error } = await getSupabaseClient()
         .from("orders")
         .delete()
         .eq("id", id)
@@ -77,13 +79,15 @@ async function remove(id: string) {
 
     if (error) throw error;
 
-    return data;
+    return data !== null;
 }
 
-export default {
+const OrderRepository: OrderRepositoryContract = {
     findAll,
     findById,
     create,
     update,
     remove
 };
+
+export default OrderRepository;

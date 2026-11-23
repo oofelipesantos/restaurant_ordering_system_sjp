@@ -1,13 +1,18 @@
 
 import { Router } from "express";
-import ProductController from "../controller/ProductController.js";
+import { createProductController } from "../controller/ProductController.js";
+import type { ProductService } from "../services/ProductService.js";
 
-const router = Router();
+export function createProductRoutes(service: ProductService): Router {
+    const router = Router();
+    const controller = createProductController(service);
 
-router.get("/", ProductController.getAll);
-router.get("/:id", ProductController.getById);
-router.post("/", ProductController.create);
-router.put("/:id", ProductController.update);
-router.delete("/:id", ProductController.remove);
+    router.get("/", controller.getAll);
+    router.get("/search", controller.search);
+    router.get("/:id", controller.getById);
+    router.post("/", controller.create);
+    router.put("/:id", controller.update);
+    router.delete("/:id", controller.remove);
 
-export default router;
+    return router;
+}

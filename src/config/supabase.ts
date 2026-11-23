@@ -1,11 +1,28 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { ConfigurationError } from "../errors/AppError.js";
 
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY!;
+let client: SupabaseClient | undefined;
 
-const supabase = createClient(
-    supabaseUrl,
-    supabaseSecretKey,
-);
+export function getSupabaseClient(): SupabaseClient {
+    if (client) {
+        return client;
+    }
 
-export default supabase;
+    const url = process.env.SUPABASE_URL;
+    const secretKey = process.env.SUPABASE_SECRET_KEY;
+
+    if (!url || !secretKey) {
+        throw new ConfigurationError(
+            "SUPABASE_URL e SUPABASE_SECRET_KEY devem ser configuradas no arquivo .env.",
+        );
+    }
+
+    client = createClient(url, secretKey, {
+        auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+        },
+    });
+
+    return client;
+}
