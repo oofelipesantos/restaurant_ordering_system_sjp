@@ -10,6 +10,7 @@ Desenvolvimento Back-End do curso de Engenharia de Software.
 ## Integrante
 
 - Felipe Santos
+- Lucas William
 
 ## Tecnologias
 
