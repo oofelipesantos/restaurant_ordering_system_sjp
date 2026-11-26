@@ -1,62 +1,57 @@
 -- Restaurant Ordering System
--- Execute este arquivo no SQL Editor do Supabase.
+-- Estrutura exportada do PostgreSQL/Supabase.
+-- Execute este arquivo no SQL Editor do Supabase para criar as tabelas.
 
 create extension if not exists pgcrypto;
 
 create table if not exists public.categories (
-    id uuid primary key default gen_random_uuid(),
-    name text not null,
-    description text,
-    icon text,
-    display_order integer not null default 0 check (display_order >= 0),
+    id uuid not null default gen_random_uuid(),
+    name character varying not null,
+    description character varying,
+    icon character varying,
+    display_order integer not null,
     active boolean not null default true,
-    created_at timestamptz not null default now(),
-    constraint categories_name_unique unique (name)
+    created_at timestamp with time zone default now(),
+    updated_at timestamp with time zone default now(),
+    constraint categories_pkey primary key (id)
 );
 
 create table if not exists public.products (
-    id uuid primary key default gen_random_uuid(),
-    category_id uuid not null references public.categories(id) on delete restrict,
-    title text not null,
-    description text,
-    price numeric(10, 2) not null check (price >= 0),
-    image text,
+    id uuid not null default gen_random_uuid(),
+    category_id uuid not null,
+    title character varying not null,
+    description character varying,
+    price numeric not null,
+    image character varying,
     available boolean not null default true,
     active boolean not null default true,
-    created_at timestamptz not null default now()
+    created_at timestamp with time zone default now(),
+    updated_at timestamp with time zone default now(),
+    constraint products_pkey primary key (id),
+    constraint fk_products_category
+        foreign key (category_id) references public.categories(id)
 );
 
 create table if not exists public.orders (
-    id uuid primary key default gen_random_uuid(),
+    id uuid not null default gen_random_uuid(),
     status text not null default 'pending'
         check (status in ('pending', 'preparing', 'ready', 'delivered', 'cancelled')),
-    created_at timestamptz not null default now()
+    created_at timestamp with time zone default now(),
+    constraint orders_pkey primary key (id)
 );
 
 create table if not exists public.order_items (
-    id uuid primary key default gen_random_uuid(),
-    order_id uuid not null references public.orders(id) on delete cascade,
-    product_id uuid not null references public.products(id) on delete restrict,
+    id uuid not null default gen_random_uuid(),
+    order_id uuid not null,
+    product_id uuid not null,
     quantity integer not null check (quantity > 0),
-    unit_price numeric(10, 2) not null check (unit_price >= 0),
-    created_at timestamptz not null default now(),
-    constraint order_items_order_product_unique unique (order_id, product_id)
+    unit_price numeric not null check (unit_price >= 0),
+    constraint order_items_pkey primary key (id),
+    constraint order_items_order_id_fkey
+        foreign key (order_id) references public.orders(id),
+    constraint order_items_product_id_fkey
+        foreign key (product_id) references public.products(id)
 );
 
-create index if not exists products_category_id_idx
-    on public.products(category_id);
-create index if not exists products_title_idx
-    on public.products(title);
-create index if not exists orders_status_idx
-    on public.orders(status);
-create index if not exists order_items_order_id_idx
-    on public.order_items(order_id);
-create index if not exists order_items_product_id_idx
-    on public.order_items(product_id);
-
--- A API utiliza uma chave secreta do servidor, que ignora RLS.
--- Nenhuma chave secreta deve ser enviada ao navegador ou versionada no Git.
-alter table public.categories enable row level security;
-alter table public.products enable row level security;
-alter table public.orders enable row level security;
-alter table public.order_items enable row level security;
+-- A chave secreta utilizada pela API deve permanecer somente no servidor.
+-- RLS e suas policies devem ser configuradas no Supabase conforme o ambiente.

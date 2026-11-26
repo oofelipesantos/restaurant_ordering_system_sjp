@@ -33,8 +33,8 @@ Desenvolvimento Back-End do curso de Engenharia de Software.
 | `OrderItem` | `id`, `order_id`, `product_id`, `quantity`, `unit_price` | Pertence a um pedido e referencia um produto |
 
 Todos os identificadores são UUID. As chaves estrangeiras garantem a integridade
-dos relacionamentos. A exclusão de um pedido remove seus itens em cascata;
-categorias e produtos referenciados utilizam exclusão restrita.
+dos relacionamentos entre categorias, produtos, pedidos e seus itens. O banco
+rejeita a exclusão de registros que ainda estejam referenciados por outra tabela.
 
 ## Regras de negócio
 
@@ -78,6 +78,10 @@ src/
 
 database/
 └── schema.sql       # Estrutura reproduzível do PostgreSQL
+
+docs/
+├── coverage-summary.md # Resumo da cobertura de testes
+└── database.md         # Tabelas, relacionamentos e SQL de criação
 ```
 
 Os Controllers tratam o protocolo HTTP, os Services concentram regras de
@@ -121,7 +125,9 @@ enviada ao Front-end, publicada no GitHub ou compartilhada em capturas de tela.
 
 Abra o SQL Editor do Supabase e execute [`database/schema.sql`](database/schema.sql).
 O script cria as quatro tabelas, chaves primárias UUID, chaves estrangeiras,
-restrições, índices e RLS.
+valores padrão e restrições de integridade. A descrição completa das colunas,
+relacionamentos e comandos `CREATE TABLE` está em
+[`docs/database.md`](docs/database.md).
 
 ### Execução
 
@@ -298,4 +304,4 @@ O workflow `.github/workflows/ci.yml` executa automaticamente:
 - a chave secreta do Supabase é utilizada somente no Back-end;
 - erros internos não são devolvidos ao cliente;
 - dados recebidos são validados antes da persistência;
-- RLS é habilitado pelo script SQL.
+- RLS e suas policies devem ser configuradas no Supabase conforme o ambiente.
