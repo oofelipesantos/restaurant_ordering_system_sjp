@@ -123,11 +123,56 @@ enviada ao Front-end, publicada no GitHub ou compartilhada em capturas de tela.
 
 ### Banco de dados
 
-Abra o SQL Editor do Supabase e execute [`database/schema.sql`](database/schema.sql).
-O script cria as quatro tabelas, chaves primárias UUID, chaves estrangeiras,
-valores padrão e restrições de integridade. A descrição completa das colunas,
-relacionamentos e comandos `CREATE TABLE` está em
-[`docs/database.md`](docs/database.md).
+A persistência da API utiliza **PostgreSQL**, hospedado no **Supabase**. O modelo
+relacional separa o cardápio do fluxo de pedidos e mantém a integridade dos dados
+por meio de chaves primárias UUID, chaves estrangeiras e restrições `CHECK`.
+
+#### Visão relacional
+
+```mermaid
+erDiagram
+    CATEGORIES ||--o{ PRODUCTS : possui
+    ORDERS ||--o{ ORDER_ITEMS : contem
+    PRODUCTS ||--o{ ORDER_ITEMS : referencia
+
+    CATEGORIES {
+        uuid id PK
+        varchar name
+        boolean active
+    }
+    PRODUCTS {
+        uuid id PK
+        uuid category_id FK
+        varchar title
+        numeric price
+    }
+    ORDERS {
+        uuid id PK
+        text status
+        timestamptz created_at
+    }
+    ORDER_ITEMS {
+        uuid id PK
+        uuid order_id FK
+        uuid product_id FK
+        integer quantity
+        numeric unit_price
+    }
+```
+
+#### Arquivos do banco
+
+| Recurso | Conteúdo |
+|---|---|
+| [Estrutura completa](docs/database.md) | Colunas, tipos, restrições, relacionamentos e comandos `CREATE TABLE` |
+| [Script SQL](database/schema.sql) | Arquivo pronto para criar as quatro tabelas no Supabase |
+
+#### Criando as tabelas
+
+1. Abra o **SQL Editor** no painel do Supabase.
+2. Copie o conteúdo de [`database/schema.sql`](database/schema.sql).
+3. Execute o script e confirme a criação de `categories`, `products`, `orders` e
+   `order_items`.
 
 ### Execução
 
